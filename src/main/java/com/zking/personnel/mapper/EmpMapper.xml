@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.personnel.mapper.EmpMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.personnel.model.Emp" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="username" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="pwd" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="gender" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="tele" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="address" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="birthday" jdbcType="DATE" javaType="java.util.Date" />
+      <arg column="depuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, username, pwd, name, gender, email, tele, address, birthday, depuuid
+  </sql>
+  <select id="selectByPrimaryKey" resultType="com.zking.personnel.model.Emp">
+    SELECT <include refid="Base_Column_List"/> FROM emp WHERE username=#{username} AND pwd=#{pwd}
+  </select>
+    <select id="querEmpPage" resultType="com.zking.personnel.model.Emp">
+      select <include refid="Base_Column_List"/>
+      from emp where 1=1
+      <if test="null!=username and ''!=username">
+        and username like concat(concat('%',#{username}),'%')
+      </if>
+      <if test="null!=name and ''!=name">
+        and name like concat(concat('%',#{name}),'%')
+      </if>
+      <if test="null!=address and ''!=address">
+        and address like concat(concat('%',#{address}),'%')
+      </if>
+      <if test="null!=ks and ''!=ks and null!=js and ''!=js">
+        AND birthday BETWEEN #{ks} and #{js}
+      </if>
+      <if test="null!=depuuid and ''!=depuuid">
+        and depuuid = #{depuuid}
+      </if>
+      order by birthday desc
+    </select>
+  <select id="querydep" resultType="com.zking.personnel.model.Emp">
+      SELECT <include refid="Base_Column_List"/>
+    FROM emp WHERE 1=1 GROUP BY depuuid
+  </select>
+  <select id="queryemp" resultType="com.zking.personnel.model.Emp">
+    select <include refid="Base_Column_List"/> from emp where 1=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from emp
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.personnel.model.Emp" >
+    insert into emp (uuid, username, pwd, 
+      name, gender, email, 
+      tele, address, birthday, 
+      depuuid)
+    values (#{uuid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{tele,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{depuuid,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.zking.personnel.model.Emp" >
+    update emp
+    set username = #{username,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      tele = #{tele,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      depuuid = #{depuuid,jdbcType=VARCHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

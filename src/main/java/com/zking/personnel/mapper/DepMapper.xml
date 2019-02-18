@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zking.personnel.mapper.DepMapper">
+  <resultMap id="BaseResultMap" type="com.zking.personnel.model.Dep">
+    <constructor>
+      <idArg column="uuid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="tele" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    uuid, name, tele
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dep
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+  <select id="queryGoodStypePage" parameterType="com.zking.personnel.model.Dep" resultType="com.zking.personnel.model.Dep">
+    SELECT <include refid="Base_Column_List" />
+    from dep where 1=1
+    <if test="null !=name and ''!=name">
+      and name like concat(concat('%',#{name}),'%')
+    </if>
+    order by uuid DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dep
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.personnel.model.Dep">
+    insert into dep (uuid,name, tele
+      )
+    values (#{uuid,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR}, #{tele,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zking.personnel.model.Dep">
+    update dep
+    set name = #{name,jdbcType=VARCHAR},
+      tele = #{tele,jdbcType=VARCHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

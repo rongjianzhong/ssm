@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.warehouse.mapper.StoredetailMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.warehouse.model.Storedetail" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="storeuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="goodsuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, storeuuid, goodsuuid, num
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from storedetail
+    where goodsuuid = #{uuid}
+  </select>
+    <select id="queryStoredetailPage" resultType="com.zking.warehouse.model.Storedetail">
+      select <include refid="Base_Column_List"/>
+      from storedetail where 1=1
+      <if test="null!=storeuuid and ''!=storeuuid">
+        and storeuuid = #{storeuuid}
+      </if>
+      <if test="null!=goodsuuid and ''!=goodsuuid">
+        and goodsuuid = #{goodsuuid}
+      </if>
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from storedetail
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.warehouse.model.Storedetail" >
+    insert into storedetail (uuid, storeuuid, goodsuuid, 
+      num)
+    values (#{uuid,jdbcType=VARCHAR}, #{storeuuid,jdbcType=VARCHAR}, #{goodsuuid,jdbcType=VARCHAR}, 
+      #{num,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.warehouse.model.Storedetail" >
+    insert into storedetail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="storeuuid != null" >
+        storeuuid,
+      </if>
+      <if test="goodsuuid != null" >
+        goodsuuid,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="storeuuid != null" >
+        #{storeuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsuuid != null" >
+        #{goodsuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.warehouse.model.Storedetail" >
+    update storedetail
+    <set >
+      <if test="storeuuid != null" >
+        storeuuid = #{storeuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsuuid != null" >
+        goodsuuid = #{goodsuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.warehouse.model.Storedetail" >
+    update storedetail
+    set storeuuid = #{storeuuid,jdbcType=VARCHAR},
+      goodsuuid = #{goodsuuid,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateStoretai">
+    update storedetail set num = #{num} where goodsuuid = #{goodsuuid}
+  </update>
+  <select id="getone" resultType="com.zking.warehouse.model.Storedetail"
+          parameterType="com.zking.warehouse.model.Storedetail">
+   SELECT  <include refid="Base_Column_List"/> from storedetail where goodsuuid like concat(concat('%',#{goodsuuid}),'%')
+  </select>
+
+  <update id="update" parameterType="com.zking.warehouse.model.Storedetail">
+    update storedetail
+      set num = #{num,jdbcType=INTEGER}
+     where goodsuuid=#{goodsuuid}
+    </update>
+</mapper>

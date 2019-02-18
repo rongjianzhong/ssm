@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.warehouse.mapper.StoreoperMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.warehouse.model.Storeoper" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="empuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="opertime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="storeuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="goodsuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="CHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, empuuid, opertime, storeuuid, goodsuuid, num, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from storeoper
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+    <select id="queryStoreoperPage" resultType="com.zking.ssm.vo.StoreperVo">
+      select <include refid="Base_Column_List"/> from storeoper where 1=1
+      <if test="null!=empuuid and ''!=empuuid">
+      and empuuid = #{empuuid}
+      </if>
+      <if test="null!=storeuuid and ''!=storeuuid">
+      and storeuuid = #{storeuuid}
+      </if>
+      <if test="null!=goodsuuid and ''!=goodsuuid">
+      and  goodsuuid = #{goodsuuid}
+      </if>
+      <if test="null!=type and ''!=type">
+      and  type = #{type}
+      </if>
+      <if test="null!=ks and ''!=ks and null!=js and ''!=js">
+        AND opertime BETWEEN #{ks} and #{js}
+      </if>
+       order by opertime DESC
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from storeoper
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.warehouse.model.Storeoper" >
+    insert into storeoper (uuid, empuuid, opertime, 
+      storeuuid, goodsuuid, num, 
+      type)
+    values (#{uuid,jdbcType=VARCHAR}, #{empuuid,jdbcType=VARCHAR}, #{opertime},
+      #{storeuuid,jdbcType=VARCHAR}, #{goodsuuid,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, 
+      #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.warehouse.model.Storeoper" >
+    insert into storeoper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="empuuid != null" >
+        empuuid,
+      </if>
+      <if test="opertime != null" >
+        opertime,
+      </if>
+      <if test="storeuuid != null" >
+        storeuuid,
+      </if>
+      <if test="goodsuuid != null" >
+        goodsuuid,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="empuuid != null" >
+        #{empuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="opertime != null" >
+        #{opertime},
+      </if>
+      <if test="storeuuid != null" >
+        #{storeuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsuuid != null" >
+        #{goodsuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.warehouse.model.Storeoper" >
+    update storeoper
+    <set >
+      <if test="empuuid != null" >
+        empuuid = #{empuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="opertime != null" >
+        opertime = #{opertime},
+      </if>
+      <if test="storeuuid != null" >
+        storeuuid = #{storeuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsuuid != null" >
+        goodsuuid = #{goodsuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.warehouse.model.Storeoper" >
+    update storeoper
+    set empuuid = #{empuuid,jdbcType=VARCHAR},
+      opertime = #{opertime},
+      storeuuid = #{storeuuid,jdbcType=VARCHAR},
+      goodsuuid = #{goodsuuid,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      type = #{type,jdbcType=CHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

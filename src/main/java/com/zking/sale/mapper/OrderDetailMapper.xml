@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.sale.mapper.OrderDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.sale.model.OrderDetail" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="goodsuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="goodsname" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="price" jdbcType="REAL" javaType="java.lang.Float" />
+      <arg column="num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="money" jdbcType="REAL" javaType="java.lang.Float" />
+      <arg column="endtime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="ender" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="storeuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="state" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="ordersuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, goodsuuid, goodsname, price, num, money, endtime, ender, storeuuid, state, 
+    ordersuuid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from orderdetail
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+    <select id="queryOrdersPage" resultType="map" parameterType="com.zking.sale.model.OrderDetail">
+     SELECT b.* from orders a,orderdetail b where a.uuid=b.ordersuuid
+     <if test="null!=ordersuuid and ''!=ordersuuid">
+       and b.ordersuuid=#{ordersuuid}
+     </if>
+    </select>
+  <select id="queryOrderDetailPage" resultType="com.zking.sale.model.OrderDetail">
+    select <include refid="Base_Column_List"/> from orderdetail WHERE 1=1
+    <if test="null!=ordersuuid and ''!=ordersuuid">
+      and  ordersuuid = #{ordersuuid}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from orderdetail
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert">
+    insert into orderdetail
+    (uuid, goodsuuid, goodsname,price, num, money, endtime, ender, storeuuid, state,ordersuuid)
+    values
+     <foreach collection="ls" item="c">
+      (${c.uuid}, ${c.goodsuuid}, ${c.goodsname},${c.price}, ${c.num}, ${c.money}, ${c.endtime},${c.ender}, ${c.storeuuid}, ${c.state},${c.ordersuuid}),
+     </foreach>
+  </insert>
+
+  <insert id="insert1" parameterType="com.zking.sale.model.OrderDetail" >
+    insert into orderdetail (uuid, goodsuuid, goodsname,
+    price, num, money, endtime,
+    ender, storeuuid, state,
+    ordersuuid)
+    values
+      (#{uuid,jdbcType=VARCHAR}, #{goodsuuid,jdbcType=VARCHAR}, #{goodsname,jdbcType=VARCHAR},
+      #{price,jdbcType=REAL}, #{num,jdbcType=INTEGER}, #{money,jdbcType=REAL}, #{endtime},
+      #{ender,jdbcType=VARCHAR}, #{storeuuid,jdbcType=VARCHAR}, #{state,jdbcType=CHAR},
+      #{ordersuuid,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.zking.sale.model.OrderDetail">
+      update orderdetail
+      set  state=2
+      where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

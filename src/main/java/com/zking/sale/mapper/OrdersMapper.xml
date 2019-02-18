@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.sale.mapper.OrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.sale.model.Orders" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createtime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="checktime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="starttime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="endtime" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+      <arg column="type" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="creater" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="checker" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="starter" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ender" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="supplieruuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="totalmoney" jdbcType="REAL" javaType="java.lang.Float" />
+      <arg column="state" jdbcType="CHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, createtime, checktime, starttime, endtime, type, creater, checker, starter, 
+    ender, supplieruuid, totalmoney, state
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+  <select id="queryOrdersPage" resultType="com.zking.sale.model.Orders" parameterType="com.zking.sale.model.Orders">
+   select <include refid="Base_Column_List"/> from orders where 1=1 and type = 2  ORDER BY createtime DESC
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from orders
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.sale.model.Orders" >
+    insert into orders (uuid, createtime, checktime, 
+      starttime, endtime, type, creater, 
+      checker, starter, ender, 
+      supplieruuid, totalmoney, state
+      )
+    values (#{uuid,jdbcType=VARCHAR}, #{createtime}, #{checktime},
+      #{starttime}, #{endtime}, #{type,jdbcType=CHAR}, #{creater,jdbcType=VARCHAR},
+      #{checker,jdbcType=VARCHAR}, #{starter,jdbcType=VARCHAR}, #{ender,jdbcType=VARCHAR}, 
+      #{supplieruuid,jdbcType=VARCHAR}, #{totalmoney,jdbcType=REAL}, #{state,jdbcType=CHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zking.sale.model.Orders">
+    update orders set state = #{state},checker = #{checker},checktime=#{checktime} where uuid =#{uuid}
+  </update>
+    <update id="updatea" parameterType="com.zking.sale.model.Orders">
+         update orders
+    set  state=3,
+      <if test="null!=starter and ''!=starter">
+        starter = #{starter},ender = #{ender},starttime=#{starttime},endtime=#{endtime}
+      </if>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+  <update id="updateb" parameterType="com.zking.sale.model.Orders">
+  update orders
+    set  state=4
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updatec" parameterType="com.zking.sale.model.Orders">
+  update orders
+    set  state=5
+    where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+  <update id="updateorder">
+    update orders set state=#{state},starttime=#{starttime},starter=#{starter} where uuid=#{uuid}
+  </update>
+  <update id="updateordera">
+    update orders
+    set  state=#{state},starter = #{starter},ender = #{ender},starttime=#{starttime},endtime=#{endtime}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateorderb">
+    update orders
+    set  state=#{state}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <select id="queryOrderPage" resultType="com.zking.sale.model.Orders" parameterType="com.zking.sale.model.Orders">
+    select <include refid="Base_Column_List"/> from orders where 1=1 and type = 1 order by createtime desc
+  </select>
+
+  <insert id="insertorderitem" parameterType="com.zking.sale.model.OrderDetail">
+      insert into orderdetail (uuid, goodsuuid, goodsname,
+          price, num, money, endtime,
+          ender, storeuuid, state,
+          ordersuuid
+         )
+      values (#{uuid}, #{goodsuuid}, #{goodsname},
+        #{price}, #{num}, #{money}, #{endtime},
+        #{ender}, #{storeuuid}, #{state},
+        #{ordersuuid}
+      )
+  </insert>
+
+  <select id="queryybtj" resultType="java.lang.Integer" >
+    SELECT IFNULL(SUM(totalmoney),0)   FROM MONTH LEFT JOIN `orders` o
+    ON month.`month`=MONTH(o.endtime) AND o.TYPE='2'  AND o.state="4"  AND YEAR(o.endtime) =#{ks}  GROUP BY  month.`month`
+    </select>
+  <select id="queryxstj" resultType="map">
+   SELECT d.name,a.totalmoney FROM orders a,orderdetail b,goods c,goodstype d WHERE a.uuid=b.ordersuuid AND b.goodsuuid=c.uuid AND c.goodstypeuuid=d.name AND a.type = '2' AND a.state = '4'
+  </select>
+</mapper>

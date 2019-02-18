@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.basicInfo.mapper.StoreMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.basicInfo.model.Store" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="empuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="address" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createdate" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, name, empuuid, address, createdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from store
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+    <select id="queryStorePage" resultType="com.zking.basicInfo.model.Store"
+            parameterType="com.zking.basicInfo.model.Store">
+     select <include refid="Base_Column_List" /> from store where 1=1
+      <if test="name!=null and ''!=name" >
+        and name like concat(concat('%',#{name}),'%')
+      </if>
+      <if test="address!=null and ''!=address" >
+        and address like concat(concat('%',#{address}),'%')
+      </if>
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from store
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.basicInfo.model.Store" >
+    insert into store (uuid, name, empuuid, 
+      address, createdate)
+    values (#{uuid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{empuuid,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.basicInfo.model.Store" >
+    insert into store
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="empuuid != null" >
+        empuuid,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="empuuid != null" >
+        #{empuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.basicInfo.model.Store" >
+    update store
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="empuuid != null" >
+        empuuid = #{empuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.basicInfo.model.Store" >
+    update store
+    set name = #{name,jdbcType=VARCHAR},
+      empuuid = #{empuuid,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+
+  <select id="queryAllStore" resultType="com.zking.basicInfo.model.Store"
+          parameterType="com.zking.basicInfo.model.Store">
+  SELECT  uuid,name from store
+  </select>
+</mapper>

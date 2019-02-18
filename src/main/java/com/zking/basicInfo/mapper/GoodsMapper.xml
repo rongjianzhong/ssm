@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zking.basicInfo.mapper.GoodsMapper" >
+  <resultMap id="BaseResultMap" type="com.zking.basicInfo.model.Goods" >
+    <constructor >
+      <idArg column="uuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="origin" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="producer" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="unit" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="inprice" jdbcType="FLOAT" javaType="java.lang.Float" />
+      <arg column="outprice" jdbcType="FLOAT" javaType="java.lang.Float" />
+      <arg column="goodstypeuuid" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createdate" jdbcType="TIMESTAMP" javaType="java.sql.Timestamp" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uuid, name, origin, producer, unit, inprice, outprice, goodstypeuuid,createdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods
+    where name = #{uuid}
+  </select>
+    <select id="querygoodsPage" resultType="com.zking.basicInfo.model.Goods"
+            parameterType="com.zking.basicInfo.model.Goods">
+      select <include refid="Base_Column_List"/> FROM  goods where 1=1
+    <if test="null!=name and ''!=name">
+      and name like CONCAT(CONCAT('%',#{name}),'%')
+    </if>
+     <if test="null!=origin and ''!=origin">
+       and origin like concat(concat('%',#{origin},'%'))
+     </if>
+      <if test="null!=producer and ''!=producer">
+        and producer like concat(concat('%',#{producer},'%'))
+      </if>
+      <if test="null!=goodstypeuuid and ''!=goodstypeuuid">
+        and goodstypeuuid like concat(concat('%',#{goodstypeuuid},'%'))
+      </if>
+      order by createdate DESC
+    </select>
+  <select id="querygall" resultType="com.zking.basicInfo.model.Goods">
+    select UUID,producer from goods group by producer
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from goods
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zking.basicInfo.model.Goods" >
+    insert into goods (uuid, name, origin, 
+      producer, unit, inprice, 
+      outprice, goodstypeuuid,createdate)
+    values (#{uuid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{origin,jdbcType=VARCHAR}, 
+      #{producer,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{inprice},
+      #{outprice}, #{goodstypeuuid,jdbcType=VARCHAR},#{createdate})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zking.basicInfo.model.Goods" >
+    insert into goods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="origin != null" >
+        origin,
+      </if>
+      <if test="producer != null" >
+        producer,
+      </if>
+      <if test="unit != null" >
+        unit,
+      </if>
+      <if test="inprice != null" >
+        inprice,
+      </if>
+      <if test="outprice != null" >
+        outprice,
+      </if>
+      <if test="goodstypeuuid != null" >
+        goodstypeuuid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="producer != null" >
+        #{producer,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="inprice != null" >
+        #{inprice},
+      </if>
+      <if test="outprice != null" >
+        #{outprice},
+      </if>
+      <if test="goodstypeuuid != null" >
+        #{goodstypeuuid,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zking.basicInfo.model.Goods" >
+    update goods
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        origin = #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="producer != null" >
+        producer = #{producer,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="inprice != null" >
+        inprice = #{inprice},
+      </if>
+      <if test="outprice != null" >
+        outprice = #{outprice},
+      </if>
+      <if test="goodstypeuuid != null" >
+        goodstypeuuid = #{goodstypeuuid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zking.basicInfo.model.Goods" >
+    update goods
+    set name = #{name,jdbcType=VARCHAR},
+      origin = #{origin,jdbcType=VARCHAR},
+      producer = #{producer,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      inprice = #{inprice},
+      outprice = #{outprice},
+      goodstypeuuid = #{goodstypeuuid,jdbcType=VARCHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="quermap" resultType="map">
+    SELECT  g.`uuid`,g.`name`,g.`outprice`,t.name,1 COUNT, g.`outprice` money  FROM
+    goods g,goodstype t WHERE  g.`goodstypeuuid`=t.name
+    </select>
+    <select id="queryGoods" resultType="com.zking.basicInfo.model.Goods">
+      SELECT gs.uuid,gs.name,gs.origin,gs.producer,gs.unit,gs.inprice,gs.outprice,gs.goodstypeuuid,gs.createdate FROM storedetail s,goods gs WHERE s.`goodsuuid` = gs.`name`
+    </select>
+</mapper>
